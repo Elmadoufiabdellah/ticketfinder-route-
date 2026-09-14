@@ -1,0 +1,53 @@
+country,city,airport_name,iata,rank
+United Arab Emirates,Dubai,Dubai International,DXB,1
+United Arab Emirates,Abu Dhabi,Zayed International,AUH,2
+United Arab Emirates,Sharjah,Sharjah International,SHJ,3
+United Arab Emirates,Ras Al Khaimah,Ras Al Khaimah International,RKT,4
+United Arab Emirates,Al Ain,Al Ain International,AAN,5
+Italy,Rome,Leonardo da Vinci Fiumicino,FCO,1
+Italy,Milan,Milan Malpensa,MXP,2
+Italy,Venice,Venice Marco Polo,VCE,3
+Italy,Naples,Naples International,NAP,4
+Italy,Bergamo,Il Caravaggio Orio al Serio,BGY,5
+Italy,Catania,Catania Fontanarossa,CTA,6
+Italy,Bologna,Bologna Guglielmo Marconi,BLQ,7
+Italy,Palermo,Falcone Borsellino,PMO,8
+France,Paris,Charles de Gaulle,CDG,1
+France,Nice,Nice Cote d'Azur,NCE,2
+France,Lyon,Lyon Saint-Exupery,LYS,3
+France,Marseille,Marseille Provence,MRS,4
+France,Toulouse,Toulouse-Blagnac,TLS,5
+Spain,Madrid,Adolfo Suarez Madrid-Barajas,MAD,1
+Spain,Barcelona,Josep Tarradellas El Prat,BCN,2
+Spain,Palma de Mallorca,Palma de Mallorca,PMI,3
+Spain,Malaga,Malaga-Costa del Sol,AGP,4
+Spain,Alicante,Alicante-Elche,ALC,5
+United Kingdom,London,Heathrow,LHR,1
+United Kingdom,Manchester,Manchester,MAN,2
+United Kingdom,Edinburgh,Edinburgh,EDI,3
+United Kingdom,Birmingham,Birmingham,BHX,4
+United Kingdom,Glasgow,Glasgow,GLA,5
+Germany,Frankfurt,Frankfurt am Main,FRA,1
+Germany,Munich,Munich,MUC,2
+Germany,Berlin,Berlin Brandenburg,BER,3
+Germany,Dusseldorf,Dusseldorf,DUS,4
+Germany,Hamburg,Hamburg,HAM,5
+Morocco,Casablanca,Mohammed V International,CMN,1
+Morocco,Marrakesh,Marrakesh Menara,RAK,2
+Morocco,Agadir,Agadir-Al Massira,AGA,3
+Morocco,Tangier,Tangier Ibn Battouta,TNG,4
+Morocco,Fez,Fez-Saiss,FEZ,5
+Turkey,Istanbul,Istanbul Airport,IST,1
+Turkey,Istanbul,Sabiha Gokcen,SAW,2
+Turkey,Antalya,Antalya,AYT,3
+Turkey,Izmir,Adnan Menderes,ADB,4
+Turkey,Ankara,Esenboga,ESB,5
+Netherlands,Amsterdam,Schiphol,AMS,1
+Netherlands,Eindhoven,Eindhoven,EIN,2
+Netherlands,Rotterdam,Rotterdam The Hague,RTM,3
+Egypt,Cairo,Cairo International,CAI,1
+Egypt,Hurghada,Hurghada International,HRG,2
+Egypt,Sharm El Sheikh,Sharm El Sheikh International,SSH,3
+Portugal,Lisbon,Humberto Delgado,LIS,1
+Portugal,Porto,Francisco Sa Carneiro,OPO,2
+Portugal,Faro,Faro,FAO,3
