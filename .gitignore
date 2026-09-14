@@ -1,0 +1,15 @@
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Secrets — never commit the real .env
+.env
+
+# Runtime state / snapshots
+outputs/
+
+# Test cache
+.pytest_cache/
