@@ -37,6 +37,10 @@ llm/
 ├── tool2_airports.py  # adapter: country → top N airports (airports.csv)
 ├── tool3_routes.py    # adapter: state → route list JSON
 ├── tool4_payload.py   # adapter: state → provider-shaped search payload
+├── chat.py            # the turn machinery, shared by both frontends
+├── agent.py           # terminal frontend (CLI)
+├── server.py          # FastAPI backend (web frontend)
+├── static/index.html  # browser chat UI
 ├── test_core.py       # 25 tests, no network, no API key
 └── airports.csv       # IATA data used by tool2
 ```
@@ -149,6 +153,21 @@ python -m pytest test_core.py -v   # 25 tests, no network, no API key
 ```
 
 `core.py` and its tests have no third-party dependencies at all.
+
+## Web UI
+
+The same agent, in the browser:
+
+```bash
+uvicorn server:app --reload
+```
+
+Open http://127.0.0.1:8000 — chat on the left, the live state slice (the
+exact JSON the model is handed each turn) on the right. The Undo, Reset and
+Payload buttons map to the CLI's `/undo`, a fresh conversation, and
+`/payload`. The CLI (`python agent.py`) still works — both frontends are
+thin shells around `chat.py`, and both share the same
+`outputs/trip_state.json`.
 
 ## Still to decide
 

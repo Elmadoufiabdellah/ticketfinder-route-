@@ -4,3 +4,7 @@ pytest>=8.0
 # tool5 only (network). core.py + tests need neither.
 httpx>=0.27
 python-dotenv>=1.0
+
+# web backend (server.py + static/index.html)
+fastapi>=0.110
+uvicorn[standard]>=0.29

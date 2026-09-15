@@ -21,7 +21,7 @@ from pathlib import Path
 
 from models import Airport
 
-DATA = Path(__file__).resolve().parent.parent / "data" / "airports.csv"
+DATA = Path(__file__).resolve().parent / "airports.csv"
 
 ALIASES = {
     "uae": "United Arab Emirates",

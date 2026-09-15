@@ -51,7 +51,7 @@ def _as_date(raw) -> date:
 # --------------------------------------------------------------------------
 
 def set_route(state: TripState, departure_country: str, destination_country: str) -> str:
-    from tools.tool2_airports import get_top_airports
+    from tool2_airports import get_top_airports
 
     state.departure.country = departure_country
     state.destination.country = destination_country
@@ -100,7 +100,7 @@ def add_city(state: TripState, side: str, value: str, offer_next: bool = True) -
     """Add a city the customer named, or -- if they just said 'find another' --
     pull the next-ranked airport from the RAG file.
     """
-    from tools.tool2_airports import get_top_airports, lookup_city
+    from tool2_airports import get_top_airports, lookup_city
 
     s = _side(state, side)
 

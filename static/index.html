@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ticketfinder agent</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --border: #2a2f3a;
+    --text: #e6e8ec;
+    --muted: #9aa3b2;
+    --accent: #4f8cff;
+    --accent-dark: #2b5cb8;
+    --agent: #1e222b;
+    --system: #8a6d3b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header h1 { font-size: 16px; margin: 0; flex: 1; }
+  header button {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  header button:hover { border-color: var(--accent); }
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    min-height: 0;
+  }
+  /* ---- chat column ---- */
+  #chat {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  #thread {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    white-space: pre-wrap;
+    line-height: 1.45;
+    font-size: 14px;
+  }
+  .customer {
+    align-self: flex-end;
+    background: var(--accent-dark);
+  }
+  .agent {
+    align-self: flex-start;
+    background: var(--agent);
+    border: 1px solid var(--border);
+  }
+  .notice {
+    align-self: center;
+    background: none;
+    color: var(--system);
+    font-size: 12px;
+    font-family: Consolas, monospace;
+  }
+  .error {
+    align-self: center;
+    color: #e07070;
+    font-size: 13px;
+  }
+  .thinking {
+    color: var(--muted);
+    font-style: italic;
+  }
+  #composer {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+  #input {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+  }
+  #input:focus { border-color: var(--accent); }
+  #send {
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 0 20px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  #send:disabled { opacity: 0.5; cursor: default; }
+  /* ---- state column ---- */
+  #statepanel {
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  #statepanel h2 {
+    margin: 0;
+    padding: 12px 16px 4px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  #statepanel .hint {
+    padding: 0 16px 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  #state {
+    flex: 1;
+    overflow: auto;
+    margin: 0 16px 16px;
+    padding: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  @media (max-width: 800px) {
+    main { grid-template-columns: 1fr; }
+    #statepanel { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>ticketfinder agent</h1>
+  <button id="undo" title="Restore the previous state snapshot">Undo</button>
+  <button id="payload" title="Write outputs/payload.json">Payload</button>
+  <button id="reset" title="Start a fresh conversation">Reset</button>
+</header>
+<main>
+  <section id="chat">
+    <div id="thread"></div>
+    <div id="composer">
+      <input id="input" placeholder="Type as the customer... (e.g. italy to france)" autofocus>
+      <button id="send">Send</button>
+    </div>
+  </section>
+  <aside id="statepanel">
+    <h2>State slice</h2>
+    <div class="hint">The exact JSON the model is handed each turn.</div>
+    <pre id="state">{}</pre>
+  </aside>
+</main>
+
+<script>
+const thread = document.getElementById("thread");
+const input = document.getElementById("input");
+const sendBtn = document.getElementById("send");
+const stateBox = document.getElementById("state");
+
+function addBubble(text, cls) {
+  const div = document.createElement("div");
+  div.className = "bubble " + cls;
+  div.textContent = text;
+  thread.appendChild(div);
+  thread.scrollTop = thread.scrollHeight;
+  return div;
+}
+
+function setState(state) {
+  stateBox.textContent = JSON.stringify(state, null, 2);
+}
+
+function setBusy(busy) {
+  sendBtn.disabled = busy;
+  input.disabled = busy;
+  if (!busy) input.focus();
+}
+
+async function api(path, options) {
+  const resp = await fetch(path, options);
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) throw new Error(data.detail || ("HTTP " + resp.status));
+  return data;
+}
+
+async function send() {
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  addBubble(text, "customer");
+  setBusy(true);
+  const thinking = addBubble("agent thinking...", "agent thinking");
+  try {
+    const data = await api("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({text}),
+    });
+    thinking.remove();
+    for (const note of data.notices) addBubble(note, "notice");
+    addBubble(data.say, "agent");
+    setState(data.state);
+  } catch (err) {
+    thinking.remove();
+    addBubble("Error: " + err.message, "error");
+  } finally {
+    setBusy(false);
+  }
+}
+
+sendBtn.addEventListener("click", send);
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !sendBtn.disabled) send();
+});
+
+document.getElementById("undo").addEventListener("click", async () => {
+  try {
+    const data = await api("/api/undo", {method: "POST"});
+    addBubble("[undo] back to version " + data.version, "notice");
+    setState(data.state);
+  } catch (err) {
+    addBubble("Undo: " + err.message, "error");
+  }
+});
+
+document.getElementById("reset").addEventListener("click", async () => {
+  const data = await api("/api/reset", {method: "POST"});
+  thread.innerHTML = "";
+  addBubble("[reset] fresh conversation", "notice");
+  setState(data.state);
+});
+
+document.getElementById("payload").addEventListener("click", async () => {
+  try {
+    const data = await api("/api/payload");
+    addBubble("[payload] written to " + data.path, "notice");
+  } catch (err) {
+    addBubble("Payload: " + err.message, "error");
+  }
+});
+
+// initial state on page load
+api("/api/state").then(setState).catch(() => {});
+</script>
+</body>
+</html>
